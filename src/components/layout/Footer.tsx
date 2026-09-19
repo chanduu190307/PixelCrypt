@@ -18,7 +18,7 @@ export const Footer: React.FC = () => {
               "Transforming Pixels. Securing Images."
             </p>
             <p className="text-slate-500 text-[11px]">
-              Developed for SkillCraft Technology Cybersecurity Internship Task 02.
+              Educational image cryptography and pixel manipulation system.
             </p>
           </div>
 

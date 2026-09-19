@@ -124,9 +124,24 @@ export const ImageCompare: React.FC<ImageCompareProps> = ({
       {viewMode === 'slider' && (
         <div
           ref={containerRef}
+          role="slider"
+          tabIndex={0}
+          aria-label="Image comparison split slider"
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-valuenow={Math.round(sliderPosition)}
+          onKeyDown={(e) => {
+            if (e.key === 'ArrowLeft') {
+              e.preventDefault();
+              setSliderPosition(prev => Math.max(0, prev - 5));
+            } else if (e.key === 'ArrowRight') {
+              e.preventDefault();
+              setSliderPosition(prev => Math.min(100, prev + 5));
+            }
+          }}
           onMouseDown={() => setIsDragging(true)}
           onTouchStart={() => setIsDragging(true)}
-          className="relative w-full max-h-[500px] overflow-hidden rounded-xl border border-slate-800 bg-slate-950 select-none cursor-ew-resize flex items-center justify-center min-h-[320px]"
+          className="relative w-full max-h-[500px] overflow-hidden rounded-xl border border-slate-800 bg-slate-950 select-none cursor-ew-resize flex items-center justify-center min-h-[320px] focus:outline-none focus:ring-2 focus:ring-cyan-500"
         >
           <div
             style={{ transform: `scale(${zoomLevel})`, transformOrigin: 'center' }}

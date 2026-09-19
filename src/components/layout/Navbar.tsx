@@ -16,14 +16,25 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, onTabChange }) => {
     { id: 'how-it-works', label: 'How It Works', icon: <BookOpen className="w-3.5 h-3.5" /> },
   ];
 
+  const handleKeyDownLogo = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      onTabChange('encrypt');
+    }
+  };
+
   return (
     <header className="sticky top-0 z-40 bg-slate-950/85 backdrop-blur-md border-b border-slate-800/80">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 gap-2">
           {/* Brand Logo & Tagline */}
           <div
+            role="button"
+            tabIndex={0}
             onClick={() => onTabChange('encrypt')}
-            className="flex items-center gap-3 cursor-pointer group shrink-0"
+            onKeyDown={handleKeyDownLogo}
+            aria-label="PixelCrypt Home"
+            className="flex items-center gap-3 cursor-pointer group shrink-0 focus:outline-none focus:ring-2 focus:ring-cyan-500 rounded-lg p-1"
           >
             <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 p-0.5 shadow-lg shadow-cyan-500/20 group-hover:scale-105 transition-transform">
               <div className="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center">
@@ -36,7 +47,7 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, onTabChange }) => {
                   PIXEL<span className="text-cyan-400">CRYPT</span>
                 </span>
                 <span className="text-[9px] uppercase font-mono px-1.5 py-0.5 bg-cyan-950 border border-cyan-800/60 text-cyan-400 rounded font-semibold">
-                  Task 02
+                  v1.0
                 </span>
               </div>
               <p className="text-[10px] text-slate-400 hidden xl:block">
@@ -46,14 +57,16 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, onTabChange }) => {
           </div>
 
           {/* Navigation Links */}
-          <nav className="hidden sm:flex items-center space-x-1">
+          <nav className="hidden sm:flex items-center space-x-1" aria-label="Main Navigation">
             {navItems.map((item) => {
               const isActive = activeTab === item.id;
               return (
                 <button
                   key={item.id}
+                  type="button"
                   onClick={() => onTabChange(item.id)}
-                  className={`flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-medium transition-all ${
+                  aria-current={isActive ? 'page' : undefined}
+                  className={`flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-medium transition-all focus:outline-none focus:ring-2 focus:ring-cyan-500 ${
                     isActive
                       ? 'bg-cyan-950/80 text-cyan-300 border border-cyan-800/60 shadow-sm shadow-cyan-900/30'
                       : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900'
@@ -77,14 +90,16 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, onTabChange }) => {
         </div>
 
         {/* Mobile Navigation Tabs */}
-        <div className="sm:hidden flex items-center justify-around py-2 border-t border-slate-900 gap-1">
+        <nav className="sm:hidden flex items-center justify-around py-2 border-t border-slate-900 gap-1" aria-label="Mobile Navigation">
           {navItems.map((item) => {
             const isActive = activeTab === item.id;
             return (
               <button
                 key={item.id}
+                type="button"
                 onClick={() => onTabChange(item.id)}
-                className={`flex items-center gap-1 px-2.5 py-1.5 rounded-md text-[11px] font-medium whitespace-nowrap ${
+                aria-current={isActive ? 'page' : undefined}
+                className={`flex items-center gap-1 px-2.5 py-1.5 rounded-md text-[11px] font-medium whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-cyan-500 ${
                   isActive
                     ? 'bg-cyan-950 text-cyan-300 border border-cyan-800/60'
                     : 'text-slate-400 hover:text-slate-200'
@@ -95,7 +110,7 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, onTabChange }) => {
               </button>
             );
           })}
-        </div>
+        </nav>
       </div>
     </header>
   );

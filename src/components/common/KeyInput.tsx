@@ -69,7 +69,7 @@ export const KeyInput: React.FC<KeyInputProps> = ({
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
-        <label className="text-sm font-medium text-slate-200 flex items-center gap-2">
+        <label htmlFor="cryptographic-key-input" className="text-sm font-medium text-slate-200 flex items-center gap-2">
           <Key className="w-4 h-4 text-cyan-400" />
           {label}
         </label>
@@ -82,6 +82,7 @@ export const KeyInput: React.FC<KeyInputProps> = ({
 
       <div className="relative flex items-center">
         <input
+          id="cryptographic-key-input"
           type={showKey ? 'text' : 'password'}
           value={value}
           onChange={e => onChange(e.target.value)}
@@ -89,6 +90,7 @@ export const KeyInput: React.FC<KeyInputProps> = ({
           disabled={disabled}
           autoComplete="off"
           spellCheck="false"
+          aria-label={label}
           className="w-full bg-slate-900/90 border border-slate-700 rounded-lg px-3.5 py-2.5 text-sm text-slate-100 font-mono placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent pr-32 transition-all"
         />
 
@@ -97,6 +99,7 @@ export const KeyInput: React.FC<KeyInputProps> = ({
             type="button"
             onClick={() => setShowKey(!showKey)}
             title={showKey ? 'Hide key' : 'Show key'}
+            aria-label={showKey ? 'Hide key' : 'Show key'}
             className="p-1.5 text-slate-400 hover:text-slate-200 hover:bg-slate-800 rounded transition"
           >
             {showKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -108,6 +111,7 @@ export const KeyInput: React.FC<KeyInputProps> = ({
                 type="button"
                 onClick={handleCopy}
                 title="Copy key to clipboard"
+                aria-label="Copy key to clipboard"
                 className="p-1.5 text-slate-400 hover:text-cyan-400 hover:bg-slate-800 rounded transition flex items-center gap-1"
               >
                 {copied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
@@ -117,6 +121,7 @@ export const KeyInput: React.FC<KeyInputProps> = ({
                 type="button"
                 onClick={() => onChange('')}
                 title="Clear key"
+                aria-label="Clear key"
                 className="p-1.5 text-slate-400 hover:text-rose-400 hover:bg-slate-800 rounded transition"
               >
                 <Trash2 className="w-4 h-4" />
@@ -128,6 +133,7 @@ export const KeyInput: React.FC<KeyInputProps> = ({
             type="button"
             onClick={handleGenerate}
             title="Generate cryptographically random 256-bit key"
+            aria-label="Generate cryptographically random 256-bit key"
             className="flex items-center gap-1 px-2 py-1 text-xs font-semibold bg-cyan-950/80 hover:bg-cyan-900 border border-cyan-800/60 text-cyan-300 rounded transition ml-1"
           >
             <RefreshCw className="w-3.5 h-3.5" />

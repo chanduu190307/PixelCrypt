@@ -12,8 +12,11 @@
     font-family: var(--font-sans);
     min-height: 100vh;
     overflow-x: hidden;
-    selection-background-color: #06b6d4;
-    selection-color: #090d16;
+  }
+
+  ::selection {
+    background-color: #06b6d4;
+    color: #090d16;
   }
 
   /* Custom subtle scrollbar */

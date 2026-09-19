@@ -63,6 +63,15 @@ export const Dropzone: React.FC<DropzoneProps> = ({
     if (e.target.files && e.target.files.length > 0) {
       processFile(e.target.files[0]);
     }
+    e.target.value = '';
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (disabled) return;
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      fileInputRef.current?.click();
+    }
   };
 
   const handleLoadSample = (type: 'cyber' | 'gradient' | 'checkerboard') => {
@@ -73,11 +82,15 @@ export const Dropzone: React.FC<DropzoneProps> = ({
   return (
     <div className="space-y-3">
       <div
+        role="button"
+        tabIndex={disabled ? -1 : 0}
+        aria-label="File upload dropzone. Drag and drop or press Enter to browse files."
+        onKeyDown={handleKeyDown}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
         onClick={() => !disabled && fileInputRef.current?.click()}
-        className={`relative border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-all duration-200 ${
+        className={`relative border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-cyan-500 ${
           isDragOver
             ? 'border-cyan-400 bg-cyan-950/20 scale-[1.01]'
             : 'border-slate-700/80 hover:border-cyan-500/50 bg-slate-900/40 hover:bg-slate-900/70'
@@ -86,6 +99,7 @@ export const Dropzone: React.FC<DropzoneProps> = ({
         <input
           ref={fileInputRef}
           type="file"
+          aria-label="File upload input"
           accept={allowContainer ? 'image/png,image/jpeg,image/webp,.pixelcrypt' : 'image/png,image/jpeg,image/webp'}
           onChange={handleFileInput}
           disabled={disabled}

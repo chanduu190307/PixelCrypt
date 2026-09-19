@@ -18,9 +18,9 @@ export interface EducationalDecryptResult {
 /**
  * Educational Pixel Mode Encryption
  * 
- * Satisfies the cybersecurity internship requirement:
- * "Develop a simple image encryption tool using pixel manipulation.
- * Support operations like swapping pixel values or applying a basic mathematical operation to each pixel."
+ * Core Capabilities:
+ * "Image encryption using key-driven pixel manipulation:
+ * Supports pixel permutation, modular mathematical shifts, and keystream XOR diffusion."
  * 
  * Pipeline:
  * 1. Key Derivation: Derive 32-byte master key + 12-byte nonce from user key & 16-byte random salt via PBKDF2-SHA256

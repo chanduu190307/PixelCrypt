@@ -33,7 +33,7 @@ export const HowItWorks: React.FC = () => {
           <p className="text-xs text-slate-400 leading-relaxed">
             Every digital image is stored as an array of pixels $P(x, y) = [R, G, B, A]$. In natural images, neighboring pixels are strongly correlated ($\sim 0.95$). PixelCrypt runs an unbiased Fisher-Yates shuffle derived deterministically from the user key via ChaCha20 DRBG, severing spatial adjacency.
           </p>
-          <div className="p-2.5 bg-slate-950 rounded-lg border border-slate-850 font-mono text-[11px] text-cyan-300">
+          <div className="p-2.5 bg-slate-950 rounded-lg border border-slate-800 font-mono text-[11px] text-cyan-300">
             P_dest = FisherYates(P_src, Key_Seed)
           </div>
         </div>
@@ -50,7 +50,7 @@ export const HowItWorks: React.FC = () => {
           <p className="text-xs text-slate-400 leading-relaxed">
             Each color channel is an 8-bit integer in the finite ring Z₂₅₆ = [0, 1, ..., 255]. PixelCrypt adds a key-derived modular shift S_k in Z₂₅₆. Decryption simply subtracts S_k modulo 256, guaranteeing 100% exact bit-level mathematical inversion without roundoff errors.
           </p>
-          <div className="p-2.5 bg-slate-950 rounded-lg border border-slate-850 font-mono text-[11px] text-emerald-300">
+          <div className="p-2.5 bg-slate-950 rounded-lg border border-slate-800 font-mono text-[11px] text-emerald-300">
             C' = (C + S_k) mod 256
           </div>
         </div>
@@ -67,7 +67,7 @@ export const HowItWorks: React.FC = () => {
           <p className="text-xs text-slate-400 leading-relaxed">
             Following modular addition, each pixel byte is bitwise XORed with pseudorandom keystream bytes $X_k$. Based on the self-inverse property of XOR ($(A \oplus B) \oplus B = A$), the operation is reversible, flattening the histogram toward maximum entropy.
           </p>
-          <div className="p-2.5 bg-slate-950 rounded-lg border border-slate-850 font-mono text-[11px] text-purple-300">
+          <div className="p-2.5 bg-slate-950 rounded-lg border border-slate-800 font-mono text-[11px] text-purple-300">
             C'' = C' ⊕ K_stream
           </div>
         </div>
@@ -95,7 +95,7 @@ export const HowItWorks: React.FC = () => {
             <tbody className="divide-y divide-slate-800/60 font-mono text-[11px]">
               <tr>
                 <td className="py-3 px-4 text-slate-300 font-sans">Primary Purpose</td>
-                <td className="py-3 px-4 text-slate-300 font-sans">Demonstrates pixel swapping & modular arithmetic for academic requirements</td>
+                <td className="py-3 px-4 text-slate-300 font-sans">Demonstrates pixel swapping, modular arithmetic, and keystream diffusion</td>
                 <td className="py-3 px-4 text-slate-300 font-sans">Confidentiality & integrity using standardized cryptography</td>
               </tr>
               <tr>

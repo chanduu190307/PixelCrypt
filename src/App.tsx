@@ -15,7 +15,6 @@ export function App() {
   // Shared session state between workspaces
   const [currentKey, setCurrentKey] = useState<string>('');
   const [container, setContainer] = useState<PixelCryptContainer | null>(null);
-  const [packedBytes, setPackedBytes] = useState<Uint8Array | null>(null);
   const [originalDataUrl, setOriginalDataUrl] = useState<string | null>(null);
   const [originalPixels, setOriginalPixels] = useState<Uint8ClampedArray | null>(null);
   const [imageDimensions, setImageDimensions] = useState<{ width: number; height: number } | null>(null);
@@ -30,7 +29,6 @@ export function App() {
     key: string;
   }) => {
     setContainer(data.container);
-    setPackedBytes(data.packedBytes);
     setOriginalDataUrl(data.originalImageDataUrl);
     setOriginalPixels(data.originalPixels);
     setImageDimensions({
@@ -66,7 +64,6 @@ export function App() {
           <DecryptWorkspace
             initialKey={currentKey}
             initialContainer={container}
-            initialPackedBytes={packedBytes}
             cachedOriginalDataUrl={originalDataUrl}
           />
         )}

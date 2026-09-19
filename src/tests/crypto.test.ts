@@ -1,8 +1,10 @@
 import { describe, it, expect } from 'vitest';
 import { educationalEncrypt, educationalDecrypt } from '../lib/crypto/educational';
 import { aesGcmEncrypt, aesGcmDecrypt } from '../lib/crypto/aesGcm';
-import { generateRandomKey, evaluateKeyStrength, base64ToBytes } from '../lib/crypto/keyDerivation';
+import { generateRandomKey, evaluateKeyStrength, base64ToBytes, bytesToBase64 } from '../lib/crypto/keyDerivation';
 import { DeterministicKeystream } from '../lib/crypto/deterministicStream';
+import { packContainer, unpackContainer } from '../lib/crypto/container';
+import type { PixelCryptContainer } from '../types/crypto';
 
 describe('Key Management & Derivation', () => {
   it('generates random hex keys with expected length', () => {
@@ -308,3 +310,153 @@ describe('Secure AES-256-GCM Mode', () => {
     expect(() => base64ToBytes(null as any)).toThrow(/Expected a string/);
   });
 });
+
+describe('Educational Mode Validation & Boundary Handling', () => {
+  it('rejects empty or whitespace-only keys in educationalEncrypt and educationalDecrypt', async () => {
+    const pixels = new Uint8ClampedArray(16 * 4);
+    await expect(educationalEncrypt(pixels, 4, 4, '')).rejects.toThrow(/Key cannot be empty/);
+    await expect(educationalEncrypt(pixels, 4, 4, '   ')).rejects.toThrow(/Key cannot be empty/);
+
+    const salt = new Uint8Array(16);
+    const iv = new Uint8Array(12);
+    await expect(educationalDecrypt(pixels, 4, 4, '', salt, iv)).rejects.toThrow(/Key cannot be empty/);
+    await expect(educationalDecrypt(pixels, 4, 4, '  ', salt, iv)).rejects.toThrow(/Key cannot be empty/);
+  });
+
+  it('rejects invalid or out-of-boundary dimensions in educationalEncrypt and educationalDecrypt', async () => {
+    const pixels = new Uint8ClampedArray(16 * 4);
+    await expect(educationalEncrypt(pixels, 1, 4, 'key')).rejects.toThrow(/must be integers between 2 and 8192/);
+    await expect(educationalEncrypt(pixels, 10000, 4, 'key')).rejects.toThrow(/must be integers between 2 and 8192/);
+
+    const salt = new Uint8Array(16);
+    const iv = new Uint8Array(12);
+    await expect(educationalDecrypt(pixels, 1, 4, 'key', salt, iv)).rejects.toThrow(/must be integers between 2 and 8192/);
+  });
+
+  it('rejects mismatched pixel buffer lengths in educationalEncrypt and educationalDecrypt', async () => {
+    const truncatedPixels = new Uint8ClampedArray(10); // expected 4 * 4 * 4 = 64
+    await expect(educationalEncrypt(truncatedPixels, 4, 4, 'key')).rejects.toThrow(/Pixel array length/);
+
+    const salt = new Uint8Array(16);
+    const iv = new Uint8Array(12);
+    await expect(educationalDecrypt(truncatedPixels, 4, 4, 'key', salt, iv)).rejects.toThrow(/Pixel array length/);
+  });
+});
+
+describe('Full Container Export & Persistence Round-Trip', () => {
+  it('performs full export-to-binary, unpacking, and exact bit-level restoration', async () => {
+    // 1. Create a 16x16 test pattern with varied RGBA channels
+    const width = 16;
+    const height = 16;
+    const totalPixels = width * height;
+    const originalPixels = new Uint8ClampedArray(totalPixels * 4);
+
+    for (let i = 0; i < totalPixels; i++) {
+      originalPixels[i * 4] = (i * 19) % 256; // R
+      originalPixels[i * 4 + 1] = (i * 37) % 256; // G
+      originalPixels[i * 4 + 2] = (i * 71) % 256; // B
+      originalPixels[i * 4 + 3] = 255 - ((i * 5) % 128); // Mixed alpha
+    }
+
+    const secretKey = 'PixelCrypt-Persistence-Test-Passphrase-2026';
+
+    // 2. Encrypt
+    const encResult = await educationalEncrypt(originalPixels, width, height, secretKey);
+    const payload = new Uint8Array(
+      encResult.encryptedPixels.buffer,
+      encResult.encryptedPixels.byteOffset,
+      encResult.encryptedPixels.byteLength
+    );
+
+    // 3. Construct canonical container
+    const container: PixelCryptContainer = {
+      header: {
+        magic: 'PIXELCRYPT',
+        version: 1,
+        mode: 'educational-pixel',
+        mimeType: 'image/png',
+        width,
+        height,
+        channels: 4,
+        salt: bytesToBase64(encResult.salt),
+        iv: bytesToBase64(encResult.iv),
+        integrityTag: encResult.integrityTag,
+        createdAt: new Date().toISOString(),
+        metadata: {
+          filename: 'persistence_sample.png',
+          originalSize: originalPixels.byteLength,
+          preservedAlpha: true,
+        },
+      },
+      payload,
+    };
+
+    // 4. Pack into raw binary bytes (as would be saved to disk)
+    const packedBytes = packContainer(container);
+    expect(packedBytes).toBeInstanceOf(Uint8Array);
+    expect(packedBytes.byteLength).toBeGreaterThan(payload.byteLength);
+
+    // 5. Unpack from binary bytes (as would be read from an uploaded .pixelcrypt file)
+    const unpacked = unpackContainer(packedBytes);
+    expect(unpacked.header.width).toBe(width);
+    expect(unpacked.header.height).toBe(height);
+    expect(unpacked.header.mode).toBe('educational-pixel');
+
+    // 6. Decrypt with correct key
+    const unpackedSalt = base64ToBytes(unpacked.header.salt);
+    const unpackedIv = base64ToBytes(unpacked.header.iv);
+    const unpackedPayloadPixels = new Uint8ClampedArray(
+      unpacked.payload.buffer,
+      unpacked.payload.byteOffset,
+      unpacked.payload.byteLength
+    );
+
+    const decResult = await educationalDecrypt(
+      unpackedPayloadPixels,
+      unpacked.header.width,
+      unpacked.header.height,
+      secretKey,
+      unpackedSalt,
+      unpackedIv,
+      unpacked.header.integrityTag
+    );
+
+    expect(decResult.isValidKey).toBe(true);
+
+    // 7. Verify 100% BIT-EXACT pixel buffer match
+    expect(decResult.decryptedPixels.length).toBe(originalPixels.length);
+    for (let i = 0; i < originalPixels.length; i++) {
+      expect(decResult.decryptedPixels[i]).toBe(originalPixels[i]);
+    }
+    expect(decResult.decryptedPixels).toEqual(originalPixels);
+
+    // 8. Wrong-key rejection test on unpacked container
+    const wrongKeyDec = await educationalDecrypt(
+      unpackedPayloadPixels,
+      unpacked.header.width,
+      unpacked.header.height,
+      'IncorrectSecretKey999',
+      unpackedSalt,
+      unpackedIv,
+      unpacked.header.integrityTag
+    );
+    expect(wrongKeyDec.isValidKey).toBe(false);
+    expect(wrongKeyDec.decryptedPixels).not.toEqual(originalPixels);
+
+    // 9. Tampered payload rejection test on unpacked container
+    const tamperedPayload = new Uint8ClampedArray(unpackedPayloadPixels);
+    tamperedPayload[10] ^= 0x42;
+
+    const tamperedDec = await educationalDecrypt(
+      tamperedPayload,
+      unpacked.header.width,
+      unpacked.header.height,
+      secretKey,
+      unpackedSalt,
+      unpackedIv,
+      unpacked.header.integrityTag
+    );
+    expect(tamperedDec.isValidKey).toBe(false);
+  });
+});
+

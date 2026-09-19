@@ -13,7 +13,6 @@ import { loadImageFromFile, extractImageData, pixelsToDataUrl, createExportCanva
 interface DecryptWorkspaceProps {
   initialKey?: string;
   initialContainer?: PixelCryptContainer | null;
-  initialPackedBytes?: Uint8Array | null;
   cachedOriginalDataUrl?: string | null;
   onDecryptionComplete?: (info: { mode: string; success: boolean; error?: string }) => void;
 }
@@ -21,11 +20,9 @@ interface DecryptWorkspaceProps {
 export const DecryptWorkspace: React.FC<DecryptWorkspaceProps> = ({
   initialKey = '',
   initialContainer = null,
-  initialPackedBytes: _initialPackedBytes = null,
   cachedOriginalDataUrl = null,
   onDecryptionComplete,
 }) => {
-  const [, setUploadedFile] = useState<File | null>(null);
 
   // Sync state with incoming props during render
   const [prevInitialKey, setPrevInitialKey] = useState(initialKey);
@@ -69,7 +66,6 @@ export const DecryptWorkspace: React.FC<DecryptWorkspaceProps> = ({
   const handleFileSelect = async (file: File) => {
     setStatusMessage(null);
     setRestoredResult(null);
-    setUploadedFile(file);
 
     const nameLower = file.name.toLowerCase();
 

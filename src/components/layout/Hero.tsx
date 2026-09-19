@@ -14,9 +14,9 @@ export const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
       <div className="absolute top-1/3 right-10 w-72 h-72 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
-        {/* Task Badge */}
+        {/* Platform Badge */}
         <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-slate-900/90 border border-cyan-800/50 text-cyan-300 text-xs font-mono mb-6 shadow-sm shadow-cyan-950">
-          <span>SkillCraft Technology Cybersecurity Internship — Task 02</span>
+          <span>Client-Side Pixel Cryptography & Image Transformation</span>
         </div>
 
         {/* Headline */}

@@ -18,9 +18,6 @@ interface PixelCell {
   a: number;
   x: number;
   y: number;
-  stepR?: number;
-  stepG?: number;
-  stepB?: number;
   permutedFrom?: { x: number; y: number };
 }
 
@@ -277,8 +274,9 @@ export const PixelMatrixView: React.FC<PixelMatrixViewProps> = ({
               setStep(0);
               setIsPlaying(false);
             }}
-            className="p-1.5 rounded-lg bg-slate-800 text-slate-400 hover:text-slate-200 hover:bg-slate-750 transition ml-2"
+            className="p-1.5 rounded-lg bg-slate-800 text-slate-400 hover:text-slate-200 hover:bg-slate-700 transition ml-2"
             title="Reset to Phase 0"
+            aria-label="Reset to Phase 0"
           >
             <RotateCcw className="w-4 h-4" />
           </button>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Lock, Cpu, Sparkles, ArrowRight, CheckCircle2, AlertCircle, FileText, Image as ImageIcon } from 'lucide-react';
 import { Dropzone } from '../common/Dropzone';
 import { KeyInput } from '../common/KeyInput';
@@ -53,6 +53,16 @@ export const EncryptWorkspace: React.FC<EncryptWorkspaceProps> = ({
     encryptedPixels?: Uint8ClampedArray;
   } | null>(null);
 
+  const objectUrlRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (objectUrlRef.current) {
+        URL.revokeObjectURL(objectUrlRef.current);
+      }
+    };
+  }, []);
+
   // Handle uploaded file
   const handleFileSelect = async (file: File) => {
     setErrorMessage(null);
@@ -60,7 +70,12 @@ export const EncryptWorkspace: React.FC<EncryptWorkspaceProps> = ({
     try {
       const loaded = await loadImageFromFile(file);
       const { imageData } = extractImageData(loaded.img);
+
+      if (objectUrlRef.current) {
+        URL.revokeObjectURL(objectUrlRef.current);
+      }
       const dataUrl = URL.createObjectURL(file);
+      objectUrlRef.current = dataUrl;
 
       setSelectedFile(file);
       setOriginalImageUrl(dataUrl);
@@ -287,7 +302,7 @@ export const EncryptWorkspace: React.FC<EncryptWorkspaceProps> = ({
                     Educational Pixel Mode
                   </span>
                   <span className="text-[10px] uppercase font-mono px-2 py-0.5 bg-cyan-950 border border-cyan-800 text-cyan-300 rounded font-semibold">
-                    Task 02
+                    Reversible
                   </span>
                 </div>
                 <p className="text-xs text-slate-400 mt-2 leading-relaxed">
@@ -419,7 +434,7 @@ export const EncryptWorkspace: React.FC<EncryptWorkspaceProps> = ({
                     <button
                       type="button"
                       onClick={handleDownloadScrambledPng}
-                      className="flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-slate-850 hover:bg-slate-800 border border-slate-700 text-slate-200 text-xs font-semibold transition"
+                      className="flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 text-xs font-semibold transition"
                     >
                       <ImageIcon className="w-4 h-4 text-emerald-400" />
                       <span>Download Scrambled PNG</span>

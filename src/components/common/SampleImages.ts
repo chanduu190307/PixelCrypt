@@ -2,14 +2,6 @@
  * Generates synthetic test images on-the-fly using HTML5 Canvas.
  * Provides immediate zero-click testing samples for demonstrations and viva presentations.
  */
-
-export interface SampleImageOption {
-  id: string;
-  name: string;
-  description: string;
-  generate: () => File;
-}
-
 export function createTestPatternFile(type: 'cyber' | 'gradient' | 'checkerboard', width = 128, height = 128): File {
   const canvas = document.createElement('canvas');
   canvas.width = width;
