@@ -1,93 +1,136 @@
 # 🔐 PixelCrypt — Image Encryption & Decryption
 
 <p align="center">
-  <img src="https://img.shields.io/badge/PixelCrypt-Image%20Encryption%20%26%20Decryption-06B6D4?style=for-the-badge" alt="PixelCrypt">
-  <img src="https://img.shields.io/badge/Status-Production%20Ready-16A34A?style=for-the-badge" alt="Production Ready">
+  <strong>Client-Side Image Encryption, Decryption & Pixel-Level Visualization</strong>
 </p>
 
 <p align="center">
-  <strong>A modern client-side image encryption and decryption application built for secure processing, cryptography education, pixel visualization, and exact image restoration.</strong>
-</p>
-
-<p align="center">
-  React · TypeScript · Vite · Web Crypto API · AES-256-GCM · PBKDF2 · HMAC-SHA256
+  A privacy-focused browser application that demonstrates how digital images can be transformed, encrypted, authenticated, and restored entirely on the client.
 </p>
 
 <p align="center">
 
-![Frontend](https://img.shields.io/badge/Frontend-React-61DAFB?style=for-the-badge&logo=react&logoColor=white)
-![Language](https://img.shields.io/badge/Language-TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
-![Build](https://img.shields.io/badge/Build-Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)
-![Crypto](https://img.shields.io/badge/Cryptography-Web%20Crypto%20API-4285F4?style=for-the-badge)
-![Tests](https://img.shields.io/badge/Tests-35%20Passing-16A34A?style=for-the-badge)
-![License](https://img.shields.io/badge/License-MIT-2563EB?style=for-the-badge)
+![PixelCrypt](https://img.shields.io/badge/PixelCrypt-Image%20Security-00d9ff?style=for-the-badge)
+
+![Status](https://img.shields.io/badge/Status-Production%20Ready-success?style=for-the-badge)
 
 </p>
 
 <p align="center">
-  <a href="#-overview">Overview</a> •
-  <a href="#-features">Features</a> •
-  <a href="#-encryption-modes">Encryption</a> •
-  <a href="#-architecture">Architecture</a> •
-  <a href="#-installation">Installation</a> •
-  <a href="#-security">Security</a> •
-  <a href="#-testing">Testing</a>
+
+![React](https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?style=flat-square&logo=typescript&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-7.x-646CFF?style=flat-square&logo=vite&logoColor=white)
+![Web Crypto API](https://img.shields.io/badge/Web%20Crypto%20API-Native-4285F4?style=flat-square)
+![AES-256-GCM](https://img.shields.io/badge/AES--256--GCM-Secure-00C853?style=flat-square)
+![PBKDF2](https://img.shields.io/badge/PBKDF2-HMAC--SHA256-orange?style=flat-square)
+![HMAC-SHA256](https://img.shields.io/badge/HMAC-SHA256-Integrity-red?style=flat-square)
+![Tests](https://img.shields.io/badge/Tests-35%20Passing-success?style=flat-square)
+![License](https://img.shields.io/badge/License-MIT-blue?style=flat-square)
+
 </p>
 
 ---
 
-# ✨ Overview
+## 📑 Table of Contents
 
-**PixelCrypt** is a client-side image encryption and decryption application designed to make image cryptography understandable while providing a standardized authenticated-encryption workflow.
-
-The application combines an **Educational Pixel Mode** for visualizing pixel-level transformations with an **AES-256-GCM Secure Mode** for authenticated encryption using the browser's native Web Crypto API.
-
-PixelCrypt processes image data locally in the browser. The core application does not require a backend, database, or image-upload service.
-
-### 🔐 Core Capabilities
-
-- 🖼️ Image encryption and decryption
-- 🎓 Educational pixel-level encryption mode
-- 🔒 AES-256-GCM secure encryption mode
-- 🧮 Interactive Pixel Matrix visualization
-- 📦 Dedicated `.pixelcrypt` encrypted container
-- 🛡️ HMAC-SHA256 integrity protection
-- 🔑 PBKDF2-HMAC-SHA256 key derivation
-- 🚫 Wrong-key rejection
-- 🧱 Tamper and corruption detection
-- ♻️ Exact image restoration
-- 💻 Client-side processing
-- ♿ Keyboard and ARIA accessibility support
-- 🧪 Automated testing and browser verification
+- [Overview](#-overview)
+- [Application Experience](#-application-experience)
+- [Core Features](#-core-features)
+- [Educational Pixel Mode](#-educational-pixel-mode)
+- [AES-256-GCM Secure Mode](#-aes-256-gcm-secure-mode)
+- [PixelCrypt Container Format](#-pixelcrypt-container-format)
+- [Security Architecture](#-security-architecture)
+- [Privacy Architecture](#-privacy-architecture)
+- [Image Restoration](#-image-restoration)
+- [Application Data Flow](#-application-data-flow)
+- [Architecture](#-architecture)
+- [Technology Stack](#-technology-stack)
+- [Project Structure](#-project-structure)
+- [Installation](#-installation)
+- [Running the Application](#-running-the-application)
+- [Testing](#-testing)
+- [Quality Verification](#-quality-verification)
+- [Error Handling](#-error-handling)
+- [Security Considerations](#-security-considerations)
+- [Performance & Resource Management](#-performance--resource-management)
+- [Accessibility](#-accessibility)
+- [Project Highlights](#-project-highlights)
+- [Development Workflow](#-development-workflow)
+- [Repository Hygiene](#-repository-hygiene)
+- [Limitations](#-limitations)
+- [Production Considerations](#-production-considerations)
+- [Contributing](#-contributing)
+- [License](#-license)
+- [Project Status](#-project-status)
 
 ---
 
-# 🎯 Application Experience
+# 🔎 Overview
+
+**PixelCrypt** is a modern client-side web application for exploring image encryption and decryption through direct manipulation of image pixel data.
+
+The project combines:
+
+- Educational pixel-level encryption
+- Authenticated image containers
+- AES-256-GCM secure encryption
+- Pixel transformation visualization
+- Password-based key derivation
+- Integrity verification
+- Exact image restoration
+- Browser-native cryptographic APIs
+- Client-side privacy
+- Automated testing
+- Production build verification
+
+PixelCrypt is designed to make image encryption understandable while maintaining strong engineering and security practices.
+
+The core encryption and decryption workflows operate entirely inside the user's browser.
+
+---
+
+# ✨ Application Experience
+
+PixelCrypt provides four primary application areas.
+
+### 🔐 Encrypt
+
+Upload an image, provide an encryption key, select an encryption mode, and generate an encrypted PixelCrypt container.
+
+### 🔓 Decrypt
+
+Load a valid PixelCrypt container, provide the correct key, verify its integrity, and restore the original image.
+
+### 🧩 Pixel Matrix
+
+Visualize how individual image pixels change through the educational encryption pipeline.
+
+### 📖 How It Works
+
+Understand the cryptographic and pixel-processing concepts used by PixelCrypt.
+
+---
+
+# 🚀 Core Features
+
+## 🔐 Image Encryption
+
+PixelCrypt supports image encryption directly inside the browser.
 
 ```text
-                         👤 USER
-                            │
-                            ▼
-                ┌─────────────────────────┐
-                │       PIXELCRYPT        │
-                │                         │
-                │  Encrypt • Decrypt      │
-                │  Pixel Matrix           │
-                │  How It Works           │
-                └────────────┬────────────┘
-                             │
-              ┌──────────────┼──────────────┐
-              │              │              │
-              ▼              ▼              ▼
-        ┌──────────┐   ┌───────────┐   ┌───────────┐
-        │  ENCRYPT │   │  DECRYPT  │   │  LEARN    │
-        └────┬─────┘   └─────┬─────┘   └─────┬─────┘
-             │               │               │
-             ▼               ▼               ▼
-        IMAGE DATA      .PIXELCRYPT      PIXEL MATRIX
-             │               │          & EXPLANATIONS
-             └───────────────┼───────────────┘
-                             │
-                             ▼
-                     RESTORED / ENCRYPTED
-                           IMAGE DATA
+Image
+   ↓
+Validation
+   ↓
+Pixel Extraction
+   ↓
+Key Derivation
+   ↓
+Permutation / Transformation
+   ↓
+Encryption
+   ↓
+Integrity Protection
+   ↓
+PIXELCRYPT Container
